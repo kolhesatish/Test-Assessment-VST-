@@ -31,8 +31,6 @@ public class UpstoxTestScript {
 
     @Test
     public void scriptFunction() throws InterruptedException {
-        Thread.sleep(2000);
-
         //Close the pop pup
         WebElement closeButton = driver.findElement(By.className("close-modal"));
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -94,6 +92,7 @@ public class UpstoxTestScript {
 
     }
 
+    //RGB TO #Colour
     public static String rgbToHex(String rgb) {
         String[] rgbValues = rgb.replaceAll("[^0-9,]", "").split(",");
 
