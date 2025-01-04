@@ -76,7 +76,7 @@ public class UpstoxTestScript {
 
         //Checking the Test Case is right or Wrong
         if(investedAmount + totalReturns == totalValueOfInvestment) {
-            System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: %.2f" + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Total Invested Amount: " + totalValueOfInvestment);
+            System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: " + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Total Invested Amount: " + totalValueOfInvestment);
         } else {
             System.out.println(totalValueOfInvestment);
             System.out.println(totalReturns);
@@ -84,6 +84,8 @@ public class UpstoxTestScript {
             System.out.print("Test Case Failed");
         }
 
+        System.out.println();
+        
         //Start Investing Button Colour
         WebElement startInvesting = driver.findElement(By.xpath("//*[contains(@class, 'cursor-pointer') and contains(@class, 'px-4')]"));
         String initialColor = startInvesting.getCssValue("background-color");
