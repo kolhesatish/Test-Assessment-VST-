@@ -69,14 +69,13 @@ public class UpstoxTestScript {
         List<WebElement> elements = driver.findElements(By.cssSelector(".font-sm.whitespace-nowrap.font-semibold.text-dark-6"));
         String str1 = elements.get(0).getText().replaceAll("[₹,]", "").trim();;
         String str2 = elements.get(1).getText().replaceAll("[₹,]", "").trim();;
-        System.out.println(str1 + " " + str2);
 
         double investedAmount = Double.parseDouble(str1);
         double totalReturns = Double.parseDouble(str2);
 
         //Checking the Test Case is right or Wrong
         if(investedAmount + totalReturns == totalValueOfInvestment) {
-            System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: " + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Total Invested Amount: " + totalValueOfInvestment);
+            System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: " + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Total Invested Amount: " + investedAmount);
         } else {
             System.out.println(totalValueOfInvestment);
             System.out.println(totalReturns);
@@ -85,7 +84,7 @@ public class UpstoxTestScript {
         }
 
         System.out.println();
-        
+
         //Start Investing Button Colour
         WebElement startInvesting = driver.findElement(By.xpath("//*[contains(@class, 'cursor-pointer') and contains(@class, 'px-4')]"));
         String initialColor = startInvesting.getCssValue("background-color");
