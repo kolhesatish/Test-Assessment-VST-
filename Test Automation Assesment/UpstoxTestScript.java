@@ -26,7 +26,7 @@ public class UpstoxTestScript {
 
     @AfterClass
     public void tearDown() {
-//    driver.quit();
+    driver.quit();
     }
 
     @Test
@@ -90,6 +90,9 @@ public class UpstoxTestScript {
         String initialColor = startInvesting.getCssValue("background-color");
         String hexColor = rgbToHex(initialColor);
         System.out.println("Initial Button Background Color: " + hexColor);
+
+        //Browser will automatically close
+        tearDown();
 
     }
 
