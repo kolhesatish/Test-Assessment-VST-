@@ -32,9 +32,13 @@ public class UpstoxTestScript {
     @Test
     public void scriptFunction() throws InterruptedException {
         //Close the pop pup
-        WebElement closeButton = driver.findElement(By.className("close-modal"));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", closeButton);
+        try {
+            WebElement closeButton = driver.findElement(By.className("close-modal"));
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();", closeButton);
+        } catch (Exception e) {
+            System.out.println("Pop Not Found");
+        }
 
         //Hover The Element
         WebElement menuLink = driver.findElement(By.id("mega-menu-item-28609"));
