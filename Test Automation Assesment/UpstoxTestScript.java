@@ -137,16 +137,6 @@ public class UpstoxTestScript {
         double totalReturns = futureValue - totalInvested;
 
         return new double[] {totalInvested, totalReturns, futureValue};
-
-//        var investment = 800; //principal amount
-//        var annualRate = 2;
-//        var monthlyRate = annualRate / 12 / 100;  //Rate of interest
-//        var years = 30;
-//        var months = years * 12;  //Time period
-//        var futureValue = 0; //Final Value
-//
-//        futureValue = investment * (Math.pow(1 + monthlyRate, months) - 1) /
-               // monthlyRate;
     }
 
     public static BigDecimal roundToTwoDecimals(double value) {
