@@ -10,6 +10,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -88,12 +90,12 @@ public class UpstoxTestScript {
 
         //Checking the Test Case is right or Wrong
         double[] values = calculateSIPDetails(monthlyInvestment, annualRate, years);
-        if(values[0] == investedAmount && values[1] == totalReturns && values[2] == totalValueOfInvestment) {
+        if(roundToTwoDecimals(values[0]).equals(roundToTwoDecimals(investedAmount)) && roundToTwoDecimals(values[1]).equals(roundToTwoDecimals(totalReturns)) && roundToTwoDecimals(values[2]).equals(roundToTwoDecimals(totalValueOfInvestment))) {
             System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: " + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Invested Amount: " + investedAmount);
         } else {
-            System.out.println(totalValueOfInvestment + "  " + values[2]);
-            System.out.println(totalReturns + "  "+ values[1]);
-            System.out.println(investedAmount + "  " + values[0]);
+            System.out.println(totalValueOfInvestment + "  " + roundToTwoDecimals(values[2]));
+            System.out.println(totalReturns + "  "+ roundToTwoDecimals(values[1]));
+            System.out.println(roundToTwoDecimals(investedAmount) + "  " + roundToTwoDecimals(values[0]));
             System.out.print("Test Case Failed");
         }
 
@@ -122,7 +124,7 @@ public class UpstoxTestScript {
 
         return hexColor;
     }
-    
+
     //SIP Calculator
     public static double[] calculateSIPDetails(double monthlyInvestment, double annualRate, int years) {
         int months = years * 12;
@@ -130,40 +132,35 @@ public class UpstoxTestScript {
 
         double futureValue = monthlyInvestment * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate * (1 + monthlyRate);
 
-        double totalInvested = formatToTwoDecimalPlaces(monthlyInvestment * months);
+        double totalInvested = monthlyInvestment * months;
 
-        double totalReturns = formatToTwoDecimalPlaces(futureValue - totalInvested);
-        futureValue = formatToTwoDecimalPlaces(futureValue);
+        double totalReturns = futureValue - totalInvested;
 
         return new double[] {totalInvested, totalReturns, futureValue};
+
+//        var investment = 800; //principal amount
+//        var annualRate = 2;
+//        var monthlyRate = annualRate / 12 / 100;  //Rate of interest
+//        var years = 30;
+//        var months = years * 12;  //Time period
+//        var futureValue = 0; //Final Value
+//
+//        futureValue = investment * (Math.pow(1 + monthlyRate, months) - 1) /
+               // monthlyRate;
     }
 
-    public static Double formatToTwoDecimalPlaces(double value) {
-        String valueString = Double.toString(value);
-
-
-        StringBuilder str = new StringBuilder();
-
-        for(int i=0; i<valueString.length(); i++) {
-            if(valueString.charAt(i) == '.'  && i + 2 < valueString.length()) {
-                str.append('.');
-                str.append(valueString.charAt(i + 1));
-                str.append(valueString.charAt(i + 2));
-                break;
-            } else if (valueString.charAt(i) == '.' && i + 1 < valueString.length()) {
-                str.append('.');
-                str.append(valueString.charAt(i + 1));
-                str.append('0');
-                break;
-            } else if (valueString.charAt(i) == '.' && i < valueString.length()) {
-                str.append('.');
-                str.append('0');
-                str.append('0');
-                break;
+    public static BigDecimal roundToTwoDecimals(double value) {
+        String s = Double.toString(value);
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '.') {
+                if(i + 2 == s.length()) {
+                    s = s + '0';
+                }
             }
-            str.append(valueString.charAt(i));
         }
 
-        return Double.parseDouble(str.toString());
+        BigDecimal bd = new BigDecimal(s);
+        bd = bd.setScale(2, RoundingMode.HALF_UP); // Rounding to 2 decimal places
+        return bd;
     }
 }
