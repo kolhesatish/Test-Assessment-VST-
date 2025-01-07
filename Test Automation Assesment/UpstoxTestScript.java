@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class UpstoxTestScript {
 
@@ -26,7 +27,7 @@ public class UpstoxTestScript {
 
     @AfterClass
     public void tearDown() {
-    driver.quit();
+       // driver.quit();
     }
 
     @Test
@@ -49,19 +50,27 @@ public class UpstoxTestScript {
         driver.findElement(By.id("menu-item-49219")).click();
 
         //Sending Monthly monthlySIPAmount
+        double monthlyInvestment = 10000;
         WebElement monthlySIPAmount = driver.findElement(By.id("Monthly SIP amount"));
         monthlySIPAmount.clear();
         monthlySIPAmount.sendKeys("10000");
 
         //sending Monthly expectedReturnRate
+        // Generate a random value between 16 and 24 (inclusive)
+        Random random = new Random();
+        int min = 16;
+        int max = 24;
+        int annualRate = random.nextInt((max - min) + 1) + min;
         WebElement expectedReturnRate = driver.findElement(By.id("expected-return-rate"));
         expectedReturnRate.clear();
-        expectedReturnRate.sendKeys("16");
+        expectedReturnRate.sendKeys(annualRate + "");
 
         //Sending numbers of years Investing
+
+        int years = 10;
         WebElement sipTenure = driver.findElement(By.id("sip-tenure"));
         sipTenure.clear();
-        sipTenure.sendKeys("10");
+        sipTenure.sendKeys(years + "");
 
         //Extracting totalValueOfInvestment
         WebElement amount = driver.findElement(By.cssSelector(".whitespace-nowrap.text-xl.font-semibold.text-success-1"));
@@ -78,12 +87,13 @@ public class UpstoxTestScript {
         double totalReturns = Double.parseDouble(str2);
 
         //Checking the Test Case is right or Wrong
-        if(investedAmount + totalReturns == totalValueOfInvestment) {
-            System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: " + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Total Invested Amount: " + investedAmount);
+        double[] values = calculateSIPDetails(monthlyInvestment, annualRate, years);
+        if(values[0] == investedAmount && values[1] == totalReturns && values[2] == totalValueOfInvestment) {
+            System.out.print("This is Correct Result Test Case Success " + "\n" + "Total Invested Amount: " + totalValueOfInvestment + "\n" + "Total Return You Gained: " + totalReturns+ "\n" + "Invested Amount: " + investedAmount);
         } else {
-            System.out.println(totalValueOfInvestment);
-            System.out.println(totalReturns);
-            System.out.println(investedAmount);
+            System.out.println(totalValueOfInvestment + "  " + values[2]);
+            System.out.println(totalReturns + "  "+ values[1]);
+            System.out.println(investedAmount + "  " + values[0]);
             System.out.print("Test Case Failed");
         }
 
@@ -96,7 +106,7 @@ public class UpstoxTestScript {
         System.out.println("Initial Button Background Color: " + hexColor);
 
         //Browser will automatically close
-        tearDown();
+        //tearDown();
 
     }
 
@@ -111,5 +121,49 @@ public class UpstoxTestScript {
         String hexColor = String.format("#%02X%02X%02X", r, g, b);
 
         return hexColor;
+    }
+    
+    //SIP Calculator
+    public static double[] calculateSIPDetails(double monthlyInvestment, double annualRate, int years) {
+        int months = years * 12;
+        double monthlyRate = annualRate / 12 / 100;
+
+        double futureValue = monthlyInvestment * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate * (1 + monthlyRate);
+
+        double totalInvested = formatToTwoDecimalPlaces(monthlyInvestment * months);
+
+        double totalReturns = formatToTwoDecimalPlaces(futureValue - totalInvested);
+        futureValue = formatToTwoDecimalPlaces(futureValue);
+
+        return new double[] {totalInvested, totalReturns, futureValue};
+    }
+
+    public static Double formatToTwoDecimalPlaces(double value) {
+        String valueString = Double.toString(value);
+
+
+        StringBuilder str = new StringBuilder();
+
+        for(int i=0; i<valueString.length(); i++) {
+            if(valueString.charAt(i) == '.'  && i + 2 < valueString.length()) {
+                str.append('.');
+                str.append(valueString.charAt(i + 1));
+                str.append(valueString.charAt(i + 2));
+                break;
+            } else if (valueString.charAt(i) == '.' && i + 1 < valueString.length()) {
+                str.append('.');
+                str.append(valueString.charAt(i + 1));
+                str.append('0');
+                break;
+            } else if (valueString.charAt(i) == '.' && i < valueString.length()) {
+                str.append('.');
+                str.append('0');
+                str.append('0');
+                break;
+            }
+            str.append(valueString.charAt(i));
+        }
+
+        return Double.parseDouble(str.toString());
     }
 }
