@@ -74,6 +74,14 @@ public class UpstoxTestScript {
         sipTenure.clear();
         sipTenure.sendKeys(years + "");
 
+        try {
+            // Sleep for 2 seconds 
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // Handle the exception if the thread is interrupted
+            e.printStackTrace();
+        }
+
         //Extracting totalValueOfInvestment
         WebElement amount = driver.findElement(By.cssSelector(".whitespace-nowrap.text-xl.font-semibold.text-success-1"));
         String str = amount.getText();
